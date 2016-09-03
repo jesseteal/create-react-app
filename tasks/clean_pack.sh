@@ -68,7 +68,7 @@ packname=`npm pack`
 
 # Now we can copy the package back.
 cd ..
-cp -f $clean_path/$packname ./
+cp -f $clean_path/$packname $initial_path/../
 cleanup
 
 # Output the package name so `release.sh` can pick it up.
