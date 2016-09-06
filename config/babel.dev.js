@@ -10,6 +10,21 @@
 // @remove-on-eject-end
 
 var path = require('path');
+var paths = require('./paths');
+var appPackageJson = require(paths.appPackageJson);
+
+var presets = [
+    // Latest stable ECMAScript features
+    require.resolve('babel-preset-latest'),
+    // JSX, Flow
+    require.resolve('babel-preset-react')
+];
+
+// Optional support for Relay and RelayQL string templates
+if (appPackageJson && appPackageJson.dependencies && appPackageJson.dependencies['react-relay']) {
+    // unshift because babel relay plugin must run before react plugin
+    presets.unshift({"plugins": [require.resolve('./babelRelayPlugin')]});
+}
 
 module.exports = {
   // Don't try to find .babelrc because we want to force this configuration.
@@ -17,12 +32,7 @@ module.exports = {
   // This is a feature of `babel-loader` for webpack (not Babel itself).
   // It enables caching results in OS temporary directory for faster rebuilds.
   cacheDirectory: true,
-  presets: [
-    // Latest stable ECMAScript features
-    require.resolve('babel-preset-latest'),
-    // JSX, Flow
-    require.resolve('babel-preset-react')
-  ],
+  presets: presets,
   plugins: [
     // class { handleClick = () => { } }
     require.resolve('babel-plugin-transform-class-properties'),
